@@ -4,88 +4,49 @@
  *
  */
 
-const path = require('path');
-const fileExists = require('../../utils/fileExists');
+const { FULL_API, API, SERVICE_API } = require('./config');
+const prompts = require('./prompts');
+const {
+  addPrettyModel,
+  addPrettyController,
+  addPrettyBasicController,
+  addPrettyRouter,
+  addPrettyBasicRouter,
+  addRouterImport,
+  addPrettyService,
+  addPrettyServiceRouter,
+  addPrettyServiceController,
+} = require('./actions');
 
 module.exports = {
-  description: 'Add an API (model|router|controller)',
-  prompts: [
-    {
-      type: 'input',
-      name: 'name',
-      message: 'What should it be called?',
-      default: 'CustomAPI',
-      validate: value => {
-        if (/.+/.test(value)) {
-          return fileExists(value)
-            ? 'A file with this name already exists.'
-            : true;
+  description: 'Add an API (model+router+controller|router+controller|service)',
+  prompts,
+  actions: (data) => {
+    const { dbType, apiType, useServiceRouter } = data;
+
+    const actions = [];
+
+    switch (apiType) {
+      case FULL_API.value:
+        addPrettyModel(actions, dbType);
+        addPrettyController(actions, dbType);
+        addPrettyRouter(actions);
+        addRouterImport(actions);
+        break;
+      case API.value:
+        addPrettyBasicController(actions, dbType);
+        addPrettyBasicRouter(actions);
+        break;
+      case SERVICE_API.value:
+        addPrettyService(actions);
+        if (useServiceRouter) {
+          addRouterImport(actions);
+          addPrettyServiceRouter(actions);
+          addPrettyServiceController(actions);
         }
-
-        return 'The name is required';
-      },
-    },
-    // {
-    //   type: 'input',
-    //   name: 'tableName',
-    //   message: 'What should the table be called?',
-    //   default: 'CustomAPIs',
-    // },
-  ],
-  actions: data => {
-    //
-    // Add router to app init function and prettify
-    //
-    const actions = [
-      {
-        type: 'modify',
-        path: path.resolve(__dirname, '../../../src/api/index.js'),
-        pattern: '//*__imports',
-        templateFile: './api/routerImport.hbs',
-        abortOnFail: true,
-      },
-      {
-        type: 'modify',
-        path: path.resolve(__dirname, '../../../src/api/index.js'),
-        pattern: '//*__init',
-        templateFile: './api/routerInit.hbs',
-        abortOnFail: true,
-      },
-      {
-        type: 'prettify',
-        path: path.resolve(__dirname, '../../../src/api/index.js'),
-        templateFile: './api/routerImport.hbs',
-        abortOnFail: true,
-      },
-    ];
-
-    //
-    // Add Model, Router, Controller, and Tests
-    //
-    actions.push({
-      type: 'pretty-add',
-      path: path.resolve(
-        __dirname,
-        '../../../src/models/{{ camelCase name }}.js',
-      ),
-      templateFile: './api/model.hbs',
-    });
-    actions.push({
-      type: 'pretty-add',
-      path: path.resolve(
-        __dirname,
-        '../../../src/api/{{ camelCase name }}/controller.js',
-      ),
-      templateFile: './api/controller.hbs',
-    });
-    actions.push({
-      type: 'pretty-add',
-      path: path.resolve(
-        __dirname,
-        '../../../src/api/{{ camelCase name }}/index.js',
-      ),
-      templateFile: './api/router.hbs',
-    });
+        break;
+      default:
+    }
 
     return actions;
   },

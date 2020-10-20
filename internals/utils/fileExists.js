@@ -9,7 +9,8 @@ const path = require('path');
 
 const apis = fs.readdirSync(path.join(__dirname, '../../src/api'));
 const models = fs.readdirSync(path.join(__dirname, '../../src/models'));
-const files = apis.concat(models);
+const services = fs.readdirSync(path.join(__dirname, '../../src/services'));
+const files = apis.concat(models).concat(services);
 
 function componentExists(comp) {
   return files.indexOf(comp) >= 0;

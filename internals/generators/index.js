@@ -6,9 +6,10 @@
 
 const path = require('path');
 const { exec } = require('child_process');
+
 const apiGenerator = require('./api/index.js');
 
-module.exports = plop => {
+module.exports = (plop) => {
   plop.load('plop-prettier', {
     arrowParens: 'always',
     bracketSpacing: true,

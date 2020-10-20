@@ -1,0 +1,41 @@
+/**
+* {{ properCase name }} Router
+*
+*
+*/
+
+const bodyParser = require('body-parser');
+
+const { BASE_PATH } = require('../../config');
+
+const {{ camelCase name }}Controller = require('./controller');
+
+const jsonParser = bodyParser.json();
+
+function {{ camelCase name }}Routes(router, connectDb, authenticate) {
+router.get(`${BASE_PATH}/api/{{ camelCase name }}`, connectDb, authenticate, (req, res) => {
+res.send('SEND ITT!!');
+});
+
+router.post(
+`${BASE_PATH}/api/{{ camelCase name }}`,
+connectDb,
+jsonParser,
+authenticate,
+(req, res) =>
+{{ camelCase name }}Controller
+.myMethod(req.body) // TODO:
+.then((data) => {
+console.log({ data });
+return res.status(200).json(data); // 200 OK
+})
+.catch((err) => {
+if (err.reason === 'ValidationError') {
+return res.status(err.code).json(err);
+}
+return res.status(err.code || 500).send(err);
+}),
+);
+}
+
+module.exports = {{ camelCase name }}Routes;

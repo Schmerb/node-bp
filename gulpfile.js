@@ -55,12 +55,12 @@ function build() {
       .pipe(babel({
         presets: ['@babel/env'],
       }))
-      .pipe(minify({
-        ext: {
-          src: '.js',
-          min: '.min.js',
-        },
-      }))
+      // .pipe(minify({
+      //   ext: {
+      //     src: '.js',
+      //     min: '.min.js',
+      //   },
+      // }))
       .pipe(gulp.dest(JS_DEST))
   );
 }

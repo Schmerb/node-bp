@@ -1,0 +1,43 @@
+/**
+* {{ properCase name }} Model
+*
+*/
+import mongoose from 'mongoose';
+
+const { Schema } = mongoose;
+
+const {{ properCase name }}Schema = Schema({
+// TODO: new fields go here
+_creator: {
+type: Schema.Types.ObjectId,
+ref: 'User',
+default: null,
+},
+});
+
+{{ properCase name }}Schema.pre('save', function (next) {
+this._updatedAt = Date.now();
+next();
+});
+
+const getCreator = (_creator) => {
+if (_creator && 'apiRepr' in _creator) {
+return _creator.apiRepr();
+}
+return _creator;
+};
+
+{{ properCase name }}Schema.methods.apiRepr = function () {
+return {
+id: this._id,
+// TODO: new fields go here
+_creator: getCreator(this._creator),
+// _id is an ObjectID which has the createdAt timestamp encoded into first four bytes
+_createdAt: this._id.getTimestamp(),
+_updatedAt: this._updatedAt,
+};
+};
+
+const {{ properCase name }} = mongoose.model('{{ properCase name }}', {{ properCase name }}Schema);
+
+export default {{ properCase name }};
