@@ -25,7 +25,10 @@ console.log('>>> bindMiddleware');
 console.log('>>> initializeApi');
 
 app.get('/hello', (req, res) => {
-  res.send('Hello worlds!');
+  res.json({
+    message: 'Hello worlds!',
+    status: 200,
+  });
 });
 // Fallback for all non-valid endpoints
 app.use('*', (req, res) => res.status(404).json({ message: 'Not Found' }));
