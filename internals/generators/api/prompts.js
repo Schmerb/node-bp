@@ -4,7 +4,13 @@
  *
  */
 
-const { MONGODB, SEQUELIZE, FULL_API, API, SERVICE_API } = require('./config');
+const {
+  MONGODB,
+  SEQUELIZE,
+  FULL_API,
+  BASIC_API,
+  SERVICE_API,
+} = require('./config');
 const fileExists = require('../../utils/fileExists');
 
 module.exports = [
@@ -30,7 +36,7 @@ module.exports = [
     default: '(model|router|controller)',
     choices: [
       { name: FULL_API.name, value: FULL_API.value },
-      { name: API.name, value: API.value },
+      { name: BASIC_API.name, value: BASIC_API.value },
       { name: SERVICE_API.name, value: SERVICE_API.value },
     ],
   },
@@ -55,7 +61,10 @@ module.exports = [
     ],
     when: (answers) => {
       // no need to choose db when adding a new service
-      return answers.apiType !== SERVICE_API.value;
+      return (
+        answers.apiType !== SERVICE_API.value &&
+        answers.apiType !== BASIC_API.value
+      );
     },
   },
 ];

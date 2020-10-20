@@ -4,7 +4,7 @@
  *
  */
 
-const { FULL_API, API, SERVICE_API } = require('./config');
+const { FULL_API, BASIC_API, SERVICE_API } = require('./config');
 const prompts = require('./prompts');
 const {
   addPrettyModel,
@@ -33,9 +33,10 @@ module.exports = {
         addPrettyRouter(actions);
         addRouterImport(actions);
         break;
-      case API.value:
+      case BASIC_API.value:
         addPrettyBasicController(actions, dbType);
         addPrettyBasicRouter(actions);
+        addRouterImport(actions);
         break;
       case SERVICE_API.value:
         addPrettyService(actions);
